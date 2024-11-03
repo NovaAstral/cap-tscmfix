@@ -82,30 +82,30 @@ function ENT:Window(v,unlockcode,force)
 end
 
 function ENT:Think()
+	if (self.Unlock == self.UnlockCode) then
+		self.Activated = false
+	end
+	
 	if(self.AutoMode == true) then
 		local letters = {"A","B","C","D","E","F"};
 		local c = {};
 
 		for i=1,8 do
-		c[i] = math.random(0,15)
+			c[i] = math.random(0,15)
 
-	    if(c[i] > 9)then c[i] = letters[c[i]-9] end
-	end
-
-	if(self.Unlock == self.UnlockCode) then
-		self.Activated = false;
-	end
-
-	self.UnlockCode = tostring(c[1]..""..c[2]..""..c[3]..""..c[4]..""..c[5]..""..c[6]..""..c[7]..""..c[8])
+			if (c[i] > 9) then c[i] = letters[c[i]-9] end
+		end
+		
+		self.UnlockCode = tostring(c[1]..""..c[2]..""..c[3]..""..c[4]..""..c[5]..""..c[6]..""..c[7]..""..c[8])
 		self.LockCode = self.UnlockCode
 	else
 		self.UnlockCode = self.LockCode
 	end
 
-	self:Window(self.Activated,self.UnlockCode)
-	self:SetWire("Active",self.Activated)
-	self:SetWire("Code",self.UnlockCode)
-	self.Entity:NextThink(CurTime()+0.5)
+	self:Window(self.Activated, self.UnlockCode)
+	self:SetWire("Active", self.Activated)
+	self:SetWire("Code", self.UnlockCode)
+	self.Entity:NextThink(CurTime() + 0.5)
 
 	return true
 end
