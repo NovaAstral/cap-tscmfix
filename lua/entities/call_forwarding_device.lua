@@ -36,8 +36,11 @@ function ENT:Initialize()
 	self.Entity:SetSolid(SOLID_VPHYSICS);
 	self.Activated = false;
 	self.Unlock = nil;
-	self:CreateWireInputs("Activate","Unlock Code [STRING]");
-	self:CreateWireOutputs("Active");
+	self.AutoMode = true
+	self.LockCode = ""
+	self.UnlockCode = ""
+	self:CreateWireInputs("Activate","Disable Auto","Lock Code [STRING]","Unlock Code [STRING]");
+	self:CreateWireOutputs("Active","Code [STRING]");
 	local phys = self.Entity:GetPhysicsObject();
 	if(phys:IsValid())then
 		phys:EnableMotion(false);
@@ -79,21 +82,33 @@ function ENT:Window(v,unlockcode,force)
 end
 
 function ENT:Think()
-    local letters = {"A","B","C","D","E","F"};
-	local c = {};
-    for i=1,8 do
-        c[i] = math.random(0,15);
-	    if(c[i] > 9)then c[i] = letters[c[i]-9] end;
-    end
-	local unlockcode = tostring(c[1]..""..c[2]..""..c[3]..""..c[4]..""..c[5]..""..c[6]..""..c[7]..""..c[8]);
-	if(self.Unlock == unlockcode)then
-	    self.Activated = false;
+	if(self.AutoMode == true) then
+		local letters = {"A","B","C","D","E","F"};
+		local c = {};
+
+		for i=1,8 do
+		c[i] = math.random(0,15)
+
+	    if(c[i] > 9)then c[i] = letters[c[i]-9] end
 	end
-    self:Window(self.Activated, unlockcode);
-	self:SetWire("Active",self.Activated);
-	self.Entity:NextThink(CurTime()+0.5);
-	return true;
-end
+			
+	self.UnlockCode = tostring(c[1]..""..c[2]..""..c[3]..""..c[4]..""..c[5]..""..c[6]..""..c[7]..""..c[8])
+			self.LockCode = self.UnlockCode
+		else
+			self.UnlockCode = self.LockCode
+		end
+
+		if(self.Unlock == self.UnlockCode) then
+			self.Activated = false;
+		end
+
+		self:Window(self.Activated,self.UnlockCode)
+		self:SetWire("Active",self.Activated)
+		self:SetWire("Code",self.UnlockCode)
+		self.Entity:NextThink(CurTime()+0.5)
+
+		return true;
+	end
 
 function ENT:TriggerInput(k,v)
 	if(k == "Activate")then
@@ -107,6 +122,17 @@ function ENT:TriggerInput(k,v)
 	    if(v ~= "")then
 	        self.Unlock = v;
 		end
+	end
+	if(k == "Disable Auto") then
+		if(v > 0) then
+			self.AutoMode = false
+		else
+			self.AutoMode = true
+		end
+	end
+
+	if(k == "Lock Code") then
+		self.LockCode = v
 	end
 end
 

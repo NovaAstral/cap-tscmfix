@@ -512,7 +512,7 @@ local function gdopc_menuhook(len)
  	code.OnTextChanged = function(TextEntry)
  		local pos = TextEntry:GetCaretPos();
  		local len = TextEntry:GetValue():len();
-		local letters = TextEntry:GetValue():gsub("[^1-9]","");
+            local letters = TextEntry:GetValue():gsub("[^0-9]", "")
 		TextEntry:SetText(letters);
 		TextEntry:SetCaretPos(math.Clamp(pos - (len-#letters),0,letters:len())); -- Reset the caretpos!
 	end
@@ -538,8 +538,8 @@ local function gdopc_menuhook(len)
 			end
 		end
                   */
-		if not found and code:GetValue():gsub("[^1-9]","")!="" and desc:GetValue()!="" then
-			codes[code:GetValue():gsub("[^1-9]","")] = desc:GetValue()
+            if not found and code:GetValue():gsub("[^0-9]","")!="" and desc:GetValue()!="" then
+                codes[code:GetValue():gsub("[^0-9]","")] = desc:GetValue()
 			updateCodes()
 		end
 

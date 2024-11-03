@@ -443,7 +443,7 @@ end
 
 function SWEP:Think()
 
-	if  (input.IsKeyDown(KEY_N) and Pressed == false) then
+	if(!vgui.CursorVisible() and input.IsKeyDown(KEY_N) and Pressed == false) then
 		Pressed = true;
 		NV_Status = not NV_Status;
 		if (Pressed == true) then timer.Simple( 1, function() Pressed = false end) end

@@ -36,6 +36,13 @@ function SWEP:Initialize()
 
 	self:SetWeaponHoldType("pistol");
 
+    if SERVER then
+        function SWEP:Deploy()
+            if(not IsValid(self) or not IsValid(self.Owner)) then return end
+            if(self.Owner:GetNWInt("ATAGene",0) == 0) then return end
+           self.Owner:EmitSound(Sound("pulse_weapon/asuran_hand_deploy.wav"), 75, math.random(75, 125))
+        end
+    end
 end
 
 if CLIENT then
